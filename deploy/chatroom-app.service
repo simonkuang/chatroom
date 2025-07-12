@@ -1,0 +1,40 @@
+[Unit]
+Description=Chatroom Application - Rust Actix WebSocket Chat Server
+Documentation=https://github.com/your-repo/chatroom-app
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=chatroom
+Group=chatroom
+WorkingDirectory=/opt/chatroom-app
+ExecStart=/opt/chatroom-app/target/release/chatroom-app
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=chatroom-app
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/chatroom-app/logs
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Environment variables
+EnvironmentFile=-/etc/default/chatroom-app
+Environment=RUST_LOG=info
+Environment=RUST_BACKTRACE=1
+
+[Install]
+WantedBy=multi-user.target
